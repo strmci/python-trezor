@@ -160,8 +160,7 @@ class TestMsgSigntxBitcoinGold(TrezorTest):
     def test_attack_change_input(self):
         self.setup_mnemonic_allallall()
         inp1 = proto.TxInputType(
-            address_n=parse_path("44'/156'/1000'/0/0"),
-            # 1MH9KKcvdCTY44xVDC2k3fjBbX5Cz29N1q
+            address_n=parse_path("44'/156'/11'/0/0"),
             amount=1995344,
             prev_hash=bytes.fromhex(
                 "25526bf06c76ad3082bba930cf627cdd5f1b3cd0b9907dd7ff1a07e14addc985"
@@ -170,7 +169,7 @@ class TestMsgSigntxBitcoinGold(TrezorTest):
             script_type=proto.InputScriptType.SPENDADDRESS,
         )
         out1 = proto.TxOutputType(
-            address_n=parse_path("44'/156'/1000'/1/0"),
+            address_n=parse_path("44'/156'/11'/1/0"),
             amount=1896050,
             script_type=proto.OutputScriptType.PAYTOADDRESS,
         )
@@ -228,7 +227,7 @@ class TestMsgSigntxBitcoinGold(TrezorTest):
         xpubs = []
         for n in map(
             lambda index: btc.get_public_node(
-                self.client, parse_path("44'/156'/%d'" % index)
+                self.client, parse_path("48'/156'/%d'" % index)
             ),
             range(1, 4),
         ):
@@ -249,7 +248,7 @@ class TestMsgSigntxBitcoinGold(TrezorTest):
             )
 
         inp1 = proto.TxInputType(
-            address_n=parse_path("44'/156'/3'/0/0"),
+            address_n=parse_path("48'/156'/3'/0/0"),
             multisig=getmultisig(0, 0),
             # 33Ju286QvonBz5N1V754ZekQv4GLJqcc5R
             amount=48490,
@@ -265,7 +264,7 @@ class TestMsgSigntxBitcoinGold(TrezorTest):
             script_type=proto.OutputScriptType.PAYTOADDRESS,
         )
         out2 = proto.TxOutputType(
-            address_n=parse_path("44'/156'/3'/1/0"),
+            address_n=parse_path("48'/156'/3'/1/0"),
             multisig=getmultisig(1, 0),
             script_type=proto.OutputScriptType.PAYTOMULTISIG,
             amount=24000,
@@ -308,13 +307,12 @@ class TestMsgSigntxBitcoinGold(TrezorTest):
 
         assert (
             signatures[0].hex()
-            == "3045022100b1594f3b186d0dedbf61e53a1c407b1e0747098b7375941df85af045040f578e022013ba1893eb9e2fd854dd07073a83b261cf4beba76f66b07742e462b4088a7e4a"
+            == "3045022100d954f341ddd3ec96e4bc6cdb90f2df9b2032723f85e4a0187346dd743130bfca0220105ce08b795c70dc09a55569d7874bff684a877219ec2fc37c88cdffe12f332c"
         )
 
         inp1 = proto.TxInputType(
-            address_n=parse_path("44'/156'/1'/0/0"),
+            address_n=parse_path("48'/156'/1'/0/0"),
             multisig=getmultisig(0, 0, [b"", b"", signatures[0]]),
-            # 33Ju286QvonBz5N1V754ZekQv4GLJqcc5R
             amount=48490,
             prev_hash=bytes.fromhex(
                 "25526bf06c76ad3082bba930cf627cdd5f1b3cd0b9907dd7ff1a07e14addc985"
@@ -362,11 +360,11 @@ class TestMsgSigntxBitcoinGold(TrezorTest):
 
         assert (
             signatures[0].hex()
-            == "3044022006da8dbd14e6656ac8dcb956f4c0498574e88680eaeceb2cbafd8d2b2329d8cc02200972d076d444c5ff8f2ab18e14d8249ab661cb9c53335039bedcde037a40d747"
+            == "30440220614f9a18695365a2edba0d930404a77cae970d3430ad86c5b5239a96fd54bf84022030bc76a322e3b2b1c987622b5eb6da23ac1e6c905ee9b3b6405a4e4edd5bbb87"
         )
         assert (
             serialized_tx.hex()
-            == "010000000185c9dd4ae1071affd77d90b9d03c1b5fdd7c62cf30a9bb8230ad766cf06b522500000000fdfd0000473044022006da8dbd14e6656ac8dcb956f4c0498574e88680eaeceb2cbafd8d2b2329d8cc02200972d076d444c5ff8f2ab18e14d8249ab661cb9c53335039bedcde037a40d74741483045022100b1594f3b186d0dedbf61e53a1c407b1e0747098b7375941df85af045040f578e022013ba1893eb9e2fd854dd07073a83b261cf4beba76f66b07742e462b4088a7e4a414c69522102290e6649574d17938c1ecb959ae92954f9ee48e1bd5b73f35ea931a3ab8a6087210379e0107b173e2c143426760627128c5eea3f862e8df92f3c2558eeeae4e347842103ff1746ca7dcf9e5c2eea9a73779b7c5bafed549f45cf3638a94cdf1e89c7f28f53aeffffffff02c05d0000000000001976a914ea5f904d195079a350b534db4446433b3cec222e88acc05d00000000000017a91445e917e46815d2b38d3f1cf072e63dd4f3b7a7e38700000000"
+            == "010000000185c9dd4ae1071affd77d90b9d03c1b5fdd7c62cf30a9bb8230ad766cf06b522500000000fdfd00004730440220614f9a18695365a2edba0d930404a77cae970d3430ad86c5b5239a96fd54bf84022030bc76a322e3b2b1c987622b5eb6da23ac1e6c905ee9b3b6405a4e4edd5bbb8741483045022100d954f341ddd3ec96e4bc6cdb90f2df9b2032723f85e4a0187346dd743130bfca0220105ce08b795c70dc09a55569d7874bff684a877219ec2fc37c88cdffe12f332c414c695221035a8db79c0ef57a202664a3da60ca41e8865c6d86ed0aafc03f8e75173341b58021037fba152d8fca660cc49973d8bc9421ff49a75b44ea200873d70d3990f763ed4c210348cbcbd93e069416e0d5db93e86b5698852d9fd54502ad0bed9722fa83f90e4b53aeffffffff02c05d0000000000001976a914ea5f904d195079a350b534db4446433b3cec222e88acc05d00000000000017a914623c803f7fb654dac8dda7786fbf9bc38cd867f48700000000"
         )
 
     def test_send_p2sh(self):
@@ -547,6 +545,9 @@ class TestMsgSigntxBitcoinGold(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
@@ -580,6 +581,9 @@ class TestMsgSigntxBitcoinGold(TrezorTest):
                     proto.TxRequest(
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
                     ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,

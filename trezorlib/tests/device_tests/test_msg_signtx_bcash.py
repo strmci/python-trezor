@@ -390,6 +390,9 @@ class TestMsgSigntxBch(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),  # 1000' is too much
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
@@ -483,6 +486,9 @@ class TestMsgSigntxBch(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),  # SPENDMULTISIG should have 48'
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
@@ -566,6 +572,9 @@ class TestMsgSigntxBch(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),  # SPENDMULTISIG should have 48'
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
@@ -620,6 +629,9 @@ class TestMsgSigntxBch(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),  # SPENDMULTISIG should have 48'
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),

@@ -189,6 +189,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
@@ -256,6 +259,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                     proto.TxRequest(
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
                     ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
@@ -345,6 +351,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                     proto.TxRequest(
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=1),
+                    ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
                     ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
@@ -450,6 +459,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
@@ -483,6 +495,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                     proto.TxRequest(
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
                     ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
@@ -558,6 +573,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
@@ -591,6 +609,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                     proto.TxRequest(
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
                     ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
@@ -679,6 +700,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
@@ -712,6 +736,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                     proto.TxRequest(
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
                     ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
@@ -799,6 +826,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
@@ -832,6 +862,9 @@ class TestMsgSigntxSegwitNative(TrezorTest):
                     proto.TxRequest(
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
                     ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,

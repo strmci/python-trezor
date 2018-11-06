@@ -136,6 +136,7 @@ class TestMultisigChange(TrezorTest):
                 request_type=proto.RequestType.TXINPUT,
                 details=proto.TxRequestDetailsType(request_index=0),
             ),
+            proto.ButtonRequest(code=proto.ButtonRequestType.UnknownDerivationPath),
             proto.TxRequest(
                 request_type=proto.RequestType.TXMETA,
                 details=proto.TxRequestDetailsType(tx_hash=inp1.prev_hash),
@@ -162,6 +163,7 @@ class TestMultisigChange(TrezorTest):
                 request_type=proto.RequestType.TXINPUT,
                 details=proto.TxRequestDetailsType(request_index=1),
             ),
+            proto.ButtonRequest(code=proto.ButtonRequestType.UnknownDerivationPath),
             proto.TxRequest(
                 request_type=proto.RequestType.TXMETA,
                 details=proto.TxRequestDetailsType(tx_hash=inp2.prev_hash),

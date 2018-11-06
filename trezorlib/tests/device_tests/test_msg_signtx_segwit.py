@@ -208,6 +208,9 @@ class TestMsgSigntxSegwit(TrezorTest):
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
                     ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
+                    ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
@@ -241,6 +244,9 @@ class TestMsgSigntxSegwit(TrezorTest):
                     proto.TxRequest(
                         request_type=proto.RequestType.TXINPUT,
                         details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.ButtonRequest(
+                        code=proto.ButtonRequestType.UnknownDerivationPath
                     ),
                     proto.TxRequest(
                         request_type=proto.RequestType.TXOUTPUT,
@@ -293,7 +299,7 @@ class TestMsgSigntxSegwit(TrezorTest):
             script_type=proto.OutputScriptType.PAYTOADDRESS,
         )
         out2 = proto.TxOutputType(
-            address_n=parse_path("49'/1'/12345'/1/0"),
+            address_n=parse_path("49'/1'/12'/1/0"),
             script_type=proto.OutputScriptType.PAYTOP2SHWITNESS,
             amount=123456789 - 11000 - 12300000,
         )
@@ -342,7 +348,7 @@ class TestMsgSigntxSegwit(TrezorTest):
 
         assert (
             serialized_tx.hex()
-            == "0100000000010137c361fb8f2d9056ba8c98c5611930fcb48cacfdd0fe2e0449d83eea982f91200000000017160014d16b8c0680c61fc6ed2e407455715055e41052f5ffffffff02e0aebb00000000001976a91414fdede0ddc3be652a0ce1afbc1b509a55b6b94888ac3df39f060000000017a914dae9e09a7fc3bbe5a716fffec1bbb340b82a4fb9870248304502210099b5c4f8fd4402c9c0136fee5f711137d64fc9f14587e01bfa7798f5428f845d0220253e21c98f5b1b64efae69bc2ea9799c5620a43450baa6762a0c3cf4fdc886e5012103e7bfe10708f715e8538c92d46ca50db6f657bbc455b7494e6a0303ccdb868b7900000000"
+            == "0100000000010137c361fb8f2d9056ba8c98c5611930fcb48cacfdd0fe2e0449d83eea982f91200000000017160014d16b8c0680c61fc6ed2e407455715055e41052f5ffffffff02e0aebb00000000001976a91414fdede0ddc3be652a0ce1afbc1b509a55b6b94888ac3df39f060000000017a9142f98413cb83ff8b3eaf1926192e68973cbd68a3a8702473044022013cbce7c575337ca05dbe03b5920a0805b510cd8dfd3180bd7c5d01cec6439cd0220050001be4bcefb585caf973caae0ffec682347f2127cc22f26efd93ee54fd852012103e7bfe10708f715e8538c92d46ca50db6f657bbc455b7494e6a0303ccdb868b7900000000"
         )
 
         run_attack = True
@@ -352,7 +358,7 @@ class TestMsgSigntxSegwit(TrezorTest):
 
             if run_attack and msg.tx.inputs and msg.tx.inputs[0] == inp1:
                 run_attack = False
-                msg.tx.inputs[0].address_n[2] = H_(12345)
+                msg.tx.inputs[0].address_n[2] = H_(12)
 
             return msg
 
