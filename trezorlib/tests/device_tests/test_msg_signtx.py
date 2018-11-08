@@ -63,6 +63,12 @@ TXHASH_50f6f1 = bytes.fromhex(
     "50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d"
 )
 
+TXHASH_fffff = bytes.fromhex(
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+)
+
+TX_API = tx_cache("Testnet")
+
 
 def check_sign_tx(client, coin_name, inputs, outputs, fee_too_high=False, failure=None):
     __tracebackhide__ = True
@@ -307,6 +313,63 @@ class TestMsgSigntx(TrezorTest):
         assert (
             serialized_tx.hex()
             == "010000000182488650ef25a58fef6788bd71b8212038d7f2bbe4750bc7bcb44701e85ef6d5000000006b483045022100e695e2c530c7c0fc32e6b79b7cff56a7f70a8c9da787534f46b4204070f914fc02207b0879a81408a11e23b11d4c7965c62b5fc6d5c2d92340f5ee2da7b40e99314a0121023230848585885f63803a0a8aecdd6538792d5c539215c91698e315bf0253b43dffffffff0300650400000000001976a914de9b2a8da088824e8fe51debea566617d851537888ace02e0000000000001976a9141fe1d337fb81afca42818051e12fd18245d1b17288ac80380100000000001976a9140223b1a09138753c9cb0baf95a0a62c82711567a88ac00000000"
+        )
+
+    def test_testnet_segwit_big_amount(self):
+        self.setup_mnemonic_allallall()
+
+        inp1 = proto.TxInputType(
+            address_n=parse_path(
+                "m/49'/1'/0'/0/0"
+            ),
+            amount=2**32+1,
+            prev_hash=TXHASH_fffff,
+            prev_index=0,
+            script_type=proto.InputScriptType.SPENDP2SHWITNESS,
+
+        )
+
+        out1 = proto.TxOutputType(
+            address="2N1gtqietBUnAb5aaTupRoJt1vqFuozL9cY",
+            amount=2**32+1,
+            script_type=proto.OutputScriptType.PAYTOADDRESS,
+        )
+
+        with self.client:
+            self.client.set_expected_responses(
+                [
+                    proto.TxRequest(
+                        request_type=proto.RequestType.TXINPUT,
+                        details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.TxRequest(
+                        request_type=proto.RequestType.TXOUTPUT,
+                        details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.ButtonRequest(code=proto.ButtonRequestType.ConfirmOutput),
+                    proto.ButtonRequest(code=proto.ButtonRequestType.SignTx),
+                    proto.TxRequest(
+                        request_type=proto.RequestType.TXINPUT,
+                        details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.TxRequest(
+                        request_type=proto.RequestType.TXOUTPUT,
+                        details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.TxRequest(
+                        request_type=proto.RequestType.TXINPUT,
+                        details=proto.TxRequestDetailsType(request_index=0),
+                    ),
+                    proto.TxRequest(request_type=proto.RequestType.TXFINISHED),
+                ]
+            )
+            _, serialized_tx = btc.sign_tx(
+                self.client, "Testnet", [inp1], [out1], prev_txes=TX_API
+            )
+
+        assert (
+            serialized_tx.hex()
+            == "01000000000101ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000171600140099a7ecbd938ed1839f5f6bf6d50933c6db9d5cffffffff01010000000100000017a9145c9bd66d490439dc48e1f495ba7172c9f36c1f7b8702473044022032b1b9fc608a20518753017c66b32619d266fa07f87b739a74deb3382d49dbb7022003a7c00d9d20411382325cac3753e03383fa585fd03133d17300c25145c006cb0121033add1f0e8e3c3136f7428dd4a4de1057380bd311f5b0856e2269170b4ffa65bf00000000"
         )
 
     def test_two_two(self):
