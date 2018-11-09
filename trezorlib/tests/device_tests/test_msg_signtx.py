@@ -62,12 +62,9 @@ TXHASH_e5040e = bytes.fromhex(
 TXHASH_50f6f1 = bytes.fromhex(
     "50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d"
 )
-
-TXHASH_fffff = bytes.fromhex(
-    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+TXHASH_2bac7a = bytes.fromhex(
+    "2bac7ad1dec654579a71ea9555463f63ac7b7df9d8ba67b4682bba4e514d0f0c"
 )
-
-TX_API = tx_cache("Testnet")
 
 
 def check_sign_tx(client, coin_name, inputs, outputs, fee_too_high=False, failure=None):
@@ -315,63 +312,6 @@ class TestMsgSigntx(TrezorTest):
             == "010000000182488650ef25a58fef6788bd71b8212038d7f2bbe4750bc7bcb44701e85ef6d5000000006b483045022100e695e2c530c7c0fc32e6b79b7cff56a7f70a8c9da787534f46b4204070f914fc02207b0879a81408a11e23b11d4c7965c62b5fc6d5c2d92340f5ee2da7b40e99314a0121023230848585885f63803a0a8aecdd6538792d5c539215c91698e315bf0253b43dffffffff0300650400000000001976a914de9b2a8da088824e8fe51debea566617d851537888ace02e0000000000001976a9141fe1d337fb81afca42818051e12fd18245d1b17288ac80380100000000001976a9140223b1a09138753c9cb0baf95a0a62c82711567a88ac00000000"
         )
 
-    def test_testnet_segwit_big_amount(self):
-        self.setup_mnemonic_allallall()
-
-        inp1 = proto.TxInputType(
-            address_n=parse_path(
-                "m/49'/1'/0'/0/0"
-            ),
-            amount=2**32+1,
-            prev_hash=TXHASH_fffff,
-            prev_index=0,
-            script_type=proto.InputScriptType.SPENDP2SHWITNESS,
-
-        )
-
-        out1 = proto.TxOutputType(
-            address="2N1gtqietBUnAb5aaTupRoJt1vqFuozL9cY",
-            amount=2**32+1,
-            script_type=proto.OutputScriptType.PAYTOADDRESS,
-        )
-
-        with self.client:
-            self.client.set_expected_responses(
-                [
-                    proto.TxRequest(
-                        request_type=proto.RequestType.TXINPUT,
-                        details=proto.TxRequestDetailsType(request_index=0),
-                    ),
-                    proto.TxRequest(
-                        request_type=proto.RequestType.TXOUTPUT,
-                        details=proto.TxRequestDetailsType(request_index=0),
-                    ),
-                    proto.ButtonRequest(code=proto.ButtonRequestType.ConfirmOutput),
-                    proto.ButtonRequest(code=proto.ButtonRequestType.SignTx),
-                    proto.TxRequest(
-                        request_type=proto.RequestType.TXINPUT,
-                        details=proto.TxRequestDetailsType(request_index=0),
-                    ),
-                    proto.TxRequest(
-                        request_type=proto.RequestType.TXOUTPUT,
-                        details=proto.TxRequestDetailsType(request_index=0),
-                    ),
-                    proto.TxRequest(
-                        request_type=proto.RequestType.TXINPUT,
-                        details=proto.TxRequestDetailsType(request_index=0),
-                    ),
-                    proto.TxRequest(request_type=proto.RequestType.TXFINISHED),
-                ]
-            )
-            _, serialized_tx = btc.sign_tx(
-                self.client, "Testnet", [inp1], [out1], prev_txes=TX_API
-            )
-
-        assert (
-            serialized_tx.hex()
-            == "01000000000101ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000171600140099a7ecbd938ed1839f5f6bf6d50933c6db9d5cffffffff01010000000100000017a9145c9bd66d490439dc48e1f495ba7172c9f36c1f7b8702473044022032b1b9fc608a20518753017c66b32619d266fa07f87b739a74deb3382d49dbb7022003a7c00d9d20411382325cac3753e03383fa585fd03133d17300c25145c006cb0121033add1f0e8e3c3136f7428dd4a4de1057380bd311f5b0856e2269170b4ffa65bf00000000"
-        )
-
     def test_two_two(self):
         self.setup_mnemonic_nopin_nopassphrase()
 
@@ -569,6 +509,31 @@ class TestMsgSigntx(TrezorTest):
         assert (
             serialized_tx.hex()
             == "0100000001a3fb2d38322c3b327e54005cebc0686d52fcdf536e53bb5ef481a7de8056aa54010000006b4830450221009e020b0390ccad533b73b552f8a99a9d827212c558e4f755503674d07c92ad4502202d606f7316990e0461c51d4add25054f19c697aa3e3c2ced4d568f0b2c57e62f0121023230848585885f63803a0a8aecdd6538792d5c539215c91698e315bf0253b43dffffffff0170f305000000000017a9147f844bdb0b8fd54b64e3d16c85dc1170f1ff97c18700000000"
+        )
+
+    def test_testnet_big_amount(self):
+        self.setup_mnemonic_allallall()
+
+        # tx: 2bac7ad1dec654579a71ea9555463f63ac7b7df9d8ba67b4682bba4e514d0f0c
+        # input 1: 411102528330 Satoshi
+
+        inp1 = proto.TxInputType(
+            address_n=parse_path("m/44'/1'/0'/0/0"),
+            amount=411102528330,
+            prev_hash=TXHASH_2bac7a,
+            prev_index=1,
+        )
+        out1 = proto.TxOutputType(
+            address="2N1gtqietBUnAb5aaTupRoJt1vqFuozL9cY",  # Bitcoin Testnet address (randomly chosen)
+            amount=411102528330,
+            script_type=proto.OutputScriptType.PAYTOADDRESS,
+        )
+        _, serialized_tx = btc.sign_tx(
+            self.client, "Testnet", [inp1], [out1], prev_txes=tx_cache("Testnet")
+        )
+        assert (
+            serialized_tx.hex()
+            == "01000000010c0f4d514eba2b68b467bad8f97d7bac633f465595ea719a5754c6ded17aac2b010000006b483045022100a60df70235f4bb9d2342cf3e20ae7f19deacb72306a585216fc1e2adc45d13b1022013a75aaae06cb86135705214c83c1cc7b65b5337e94b6f402e183d0f0cdba1170121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff014ac39eb75f00000017a9145c9bd66d490439dc48e1f495ba7172c9f36c1f7b8700000000"
         )
 
     def test_attack_change_outputs(self):
