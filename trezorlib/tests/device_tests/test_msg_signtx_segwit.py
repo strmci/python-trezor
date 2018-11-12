@@ -165,6 +165,9 @@ class TestMsgSigntxSegwit(TrezorTest):
 
     def test_testnet_segwit_big_amount(self):
         self.setup_mnemonic_allallall()
+
+        # This test is testing transaction with amount bigger than fits to uint32
+
         inp1 = proto.TxInputType(
             address_n=parse_path("m/49'/1'/0'/0/0"),
             amount=2 ** 32 + 1,
@@ -173,7 +176,7 @@ class TestMsgSigntxSegwit(TrezorTest):
             script_type=proto.InputScriptType.SPENDP2SHWITNESS,
         )
         out1 = proto.TxOutputType(
-            address="2N1gtqietBUnAb5aaTupRoJt1vqFuozL9cY",  # Bitcoin Testnet address (randomly chosen)
+            address="2Mt7P2BAfE922zmfXrdcYTLyR7GUvbwSEns",  # seed allallall, bip32: m/49'/1'/0'/0/1, script type:p2shsegwit
             amount=2 ** 32 + 1,
             script_type=proto.OutputScriptType.PAYTOADDRESS,
         )
@@ -208,7 +211,7 @@ class TestMsgSigntxSegwit(TrezorTest):
             _, serialized_tx = btc.sign_tx(self.client, "Testnet", [inp1], [out1])
         assert (
             serialized_tx.hex()
-            == "01000000000101ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000171600140099a7ecbd938ed1839f5f6bf6d50933c6db9d5cffffffff01010000000100000017a9145c9bd66d490439dc48e1f495ba7172c9f36c1f7b8702473044022032b1b9fc608a20518753017c66b32619d266fa07f87b739a74deb3382d49dbb7022003a7c00d9d20411382325cac3753e03383fa585fd03133d17300c25145c006cb0121033add1f0e8e3c3136f7428dd4a4de1057380bd311f5b0856e2269170b4ffa65bf00000000"
+            == "01000000000101ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000171600140099a7ecbd938ed1839f5f6bf6d50933c6db9d5cffffffff01010000000100000017a914097c569095163e84475d07aa95a1f736df895b7b8702483045022100cb9d3aa7a8064702e6b61c20c7fb9cb672c69d3786cf5efef8ad6d90136ca7d8022065119ff6c6e6e6960e6508fc5360359bb269bb25ef8d90019decaa0a050cc45a0121033add1f0e8e3c3136f7428dd4a4de1057380bd311f5b0856e2269170b4ffa65bf00000000"
         )
 
     def test_send_multisig_1(self):

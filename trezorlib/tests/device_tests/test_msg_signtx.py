@@ -514,7 +514,9 @@ class TestMsgSigntx(TrezorTest):
     def test_testnet_big_amount(self):
         self.setup_mnemonic_allallall()
 
-        # tx: 2bac7ad1dec654579a71ea9555463f63ac7b7df9d8ba67b4682bba4e514d0f0c
+        # This test is testing transaction with amount bigger than fits to uint32
+
+        # tx: 2bac7ad1dec654579a71ea9555463f63ac7b7df9d8ba67b4682bba4e514d0f0c:1
         # input 1: 411102528330 Satoshi
 
         inp1 = proto.TxInputType(
@@ -524,16 +526,14 @@ class TestMsgSigntx(TrezorTest):
             prev_index=1,
         )
         out1 = proto.TxOutputType(
-            address="2N1gtqietBUnAb5aaTupRoJt1vqFuozL9cY",  # Bitcoin Testnet address (randomly chosen)
+            address="mopZWqZZyQc3F2Sy33cvDtJchSAMsnLi7b",  # seed allallall, bip32: m/44'/1'/0'/0/1
             amount=411102528330,
             script_type=proto.OutputScriptType.PAYTOADDRESS,
         )
-        _, serialized_tx = btc.sign_tx(
-            self.client, "Testnet", [inp1], [out1], prev_txes=tx_cache("Testnet")
-        )
+        _, serialized_tx = check_sign_tx(self.client, "Testnet", [inp1], [out1])
         assert (
             serialized_tx.hex()
-            == "01000000010c0f4d514eba2b68b467bad8f97d7bac633f465595ea719a5754c6ded17aac2b010000006b483045022100a60df70235f4bb9d2342cf3e20ae7f19deacb72306a585216fc1e2adc45d13b1022013a75aaae06cb86135705214c83c1cc7b65b5337e94b6f402e183d0f0cdba1170121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff014ac39eb75f00000017a9145c9bd66d490439dc48e1f495ba7172c9f36c1f7b8700000000"
+            == "01000000010c0f4d514eba2b68b467bad8f97d7bac633f465595ea719a5754c6ded17aac2b010000006b4830450221008e3b926f04d8830bd5b67698af25c9e00c9db1b1ef3e5d69af794446753da94a02202d4a7509f26bba29ff643a7ac0d43fb128c1a632cc502b8f44eada8930fb9c9b0121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff014ac39eb75f0000001976a9145b157a678a10021243307e4bb58f36375aa80e1088ac00000000"
         )
 
     def test_attack_change_outputs(self):
