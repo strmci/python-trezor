@@ -18,7 +18,7 @@ import time
 
 import pytest
 
-from trezorlib import messages as proto, ontology
+from trezorlib import messages, ontology
 from trezorlib.messages import ButtonRequestType as B
 from trezorlib.tools import parse_path
 
@@ -32,7 +32,7 @@ class TestMsgOntologySignOntIdAddAttributes(TrezorTest):
     def test_ontology_sign_ont_id_add_attributes(self):
         self.setup_mnemonic_nopin_nopassphrase()
 
-        transaction = proto.OntologyTransaction(
+        transaction = messages.OntologyTransaction(
             version=0x00,
             nonce=0x7F7F1CEB,
             type=0xD1,
@@ -42,13 +42,13 @@ class TestMsgOntologySignOntIdAddAttributes(TrezorTest):
             tx_attributes=[],
         )
 
-        ont_id_add_attributes = proto.OntologyOntIdAddAttributes(
+        ont_id_add_attributes = messages.OntologyOntIdAddAttributes(
             ont_id="did:ont:AGVn4NZNEQ7RawHTDxjaTjZ3R8h8q1aq9h",
             public_key=bytes.fromhex(
                 "03a8269b0dad311d98195e76729bc57003348a315fd17b6bf4f90ba8b86735fa33"
             ),
             ont_id_attributes=[
-                proto.OntologyOntIdAttribute(
+                messages.OntologyOntIdAttribute(
                     key="firstName", type="json", value="John Sheppard"
                 )
             ],
@@ -84,8 +84,8 @@ class TestMsgOntologySignOntIdAddAttributes(TrezorTest):
             self.client.set_input_flow(input_flow)
             self.client.set_expected_responses(
                 [
-                    proto.ButtonRequest(code=B.SignTx),
-                    proto.OntologySignedOntIdAddAttributes(),
+                    messages.ButtonRequest(code=B.SignTx),
+                    messages.OntologySignedOntIdAddAttributes(),
                 ]
             )
             return ontology.sign_add_attr(
