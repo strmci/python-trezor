@@ -18,7 +18,8 @@ import time
 
 import pytest
 
-from trezorlib import messages
+from trezorlib import messages as proto, ontology
+from trezorlib.messages import ButtonRequestType as B
 from trezorlib.tools import parse_path
 
 from .common import TrezorTest
@@ -31,7 +32,7 @@ class TestMsgOntologySignOntIdAddAttributes(TrezorTest):
     def test_ontology_sign_ont_id_add_attributes(self):
         self.setup_mnemonic_nopin_nopassphrase()
 
-        transaction = messages.OntologyTransaction(
+        transaction = proto.OntologyTransaction(
             version=0x00,
             nonce=0x7F7F1CEB,
             type=0xD1,
@@ -41,13 +42,13 @@ class TestMsgOntologySignOntIdAddAttributes(TrezorTest):
             tx_attributes=[],
         )
 
-        ont_id_add_attributes = messages.OntologyOntIdAddAttributes(
+        ont_id_add_attributes = proto.OntologyOntIdAddAttributes(
             ont_id="did:ont:AGVn4NZNEQ7RawHTDxjaTjZ3R8h8q1aq9h",
             public_key=bytes.fromhex(
                 "03a8269b0dad311d98195e76729bc57003348a315fd17b6bf4f90ba8b86735fa33"
             ),
             ont_id_attributes=[
-                messages.OntologyOntIdAttribute(
+                proto.OntologyOntIdAttribute(
                     key="firstName", type="json", value="John Sheppard"
                 )
             ],
@@ -70,23 +71,23 @@ class TestMsgOntologySignOntIdAddAttributes(TrezorTest):
     def _ontology_sign(
         self, num_of_swipes, address_n, transaction, ont_id_add_attributes
     ):
-        # Sending Ontology message
-        msg = messages.OntologySignOntIdAddAttributes(
-            address_n=address_n,
-            transaction=transaction,
-            ont_id_add_attributes=ont_id_add_attributes,
-        )
-
-        self.client.transport.write(msg)
-        ret = self.client.transport.read()
-
-        # Confirm action
-        assert isinstance(ret, messages.ButtonRequest)
-        self.client.debug.press_yes()
-        self.client.transport.write(messages.ButtonAck())
-        time.sleep(1)
-        for _ in range(num_of_swipes):
-            self.client.debug.swipe_down()
+        def input_flow():
+            yield
             time.sleep(1)
-        self.client.debug.press_yes()
-        return self.client.transport.read()
+            for _ in range(num_of_swipes):
+                self.client.debug.swipe_down()
+                time.sleep(1)
+            # Confirm Action
+            self.client.debug.press_yes()
+
+        with self.client:
+            self.client.set_input_flow(input_flow)
+            self.client.set_expected_responses(
+                [
+                    proto.ButtonRequest(code=B.SignTx),
+                    proto.OntologySignedOntIdAddAttributes(),
+                ]
+            )
+            return ontology.sign_add_attr(
+                self.client, address_n, transaction, ont_id_add_attributes
+            )
