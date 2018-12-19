@@ -64,7 +64,10 @@ class TestMsgOntologySignOntIdRegister(TrezorTest):
 
     def _ontology_sign(self, num_of_swipes, address_n, transaction, ont_id_register):
         def input_flow():
-            yield
+
+            # Sign Tx
+            btn_code = yield
+            assert btn_code == B.SignTx
 
             # Swipe and confirm
             time.sleep(1)

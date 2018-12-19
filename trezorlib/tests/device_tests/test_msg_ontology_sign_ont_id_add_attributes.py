@@ -72,7 +72,11 @@ class TestMsgOntologySignOntIdAddAttributes(TrezorTest):
         self, num_of_swipes, address_n, transaction, ont_id_add_attributes
     ):
         def input_flow():
-            yield
+
+            # Sign Tx
+            btn_code = yield
+            assert btn_code == B.SignTx
+
             time.sleep(1)
             for _ in range(num_of_swipes):
                 self.client.debug.swipe_down()
