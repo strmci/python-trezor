@@ -77,10 +77,12 @@ class TestMsgOntologySignOntIdAddAttributes(TrezorTest):
             btn_code = yield
             assert btn_code == B.SignTx
 
+            # Swipe and confirm
             time.sleep(1)
             for _ in range(num_of_swipes):
                 self.client.debug.swipe_down()
                 time.sleep(1)
+
             # Confirm Action
             self.client.debug.press_yes()
 

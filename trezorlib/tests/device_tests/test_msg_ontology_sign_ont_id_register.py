@@ -74,6 +74,7 @@ class TestMsgOntologySignOntIdRegister(TrezorTest):
             for _ in range(num_of_swipes):
                 self.client.debug.swipe_down()
                 time.sleep(1)
+
             # Confirm Action
             self.client.debug.press_yes()
 
