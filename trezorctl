@@ -263,9 +263,7 @@ def set_label(connect, label):
 
 
 @cli.command(help="Set passphrase source.")
-@click.argument(
-    "source", type=CHOICE_PASSPHRASE_SOURCE_TYPE, default="ask"
-)
+@click.argument("source", type=CHOICE_PASSPHRASE_SOURCE_TYPE, default="ask")
 @click.pass_obj
 def set_passphrase_source(connect, source):
     return device.apply_settings(connect(), passphrase_source=source)
